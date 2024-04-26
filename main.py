@@ -52,7 +52,10 @@ def add_employee():
     tel = request.json.get('tel')
     department = request.json.get('department')
     role = request.json.get('role')
-    c.execute('insert into Employee values (?,?,?,?,?)', (ename, aname, email, password, tel, department, role))
+    c.execute(
+        'insert into Employee (EmployeeName, AccountName, EmailAddress, Password, Tel, DepartmentID, RoleID) values (?,?,?,?,?,?,?)',
+        (ename, aname, email, password, tel, department, role)
+        )
     conn.commit()
     conn.close()
     return 'employee added'
@@ -113,7 +116,7 @@ def check_employee_email_and_pass():
 
 
 # b)
-@app.route('/search', methods=['post'])
+@app.route('/search', methods=['get'])
 def search_employee():
     ename = request.json.get('ename')
     aname = request.json.get('aname')
@@ -130,7 +133,7 @@ def search_employee():
 
 
 # c)
-@app.route('/searchOrder/<id>', methods=['post'])
+@app.route('/searchOrder/<id>', methods=['get'])
 def search_order(id):
     conn = sqlite3.connect(sqldbname)
     c = conn.cursor()
