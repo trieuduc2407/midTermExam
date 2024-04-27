@@ -1,6 +1,6 @@
 # C1
 # a)
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, request, jsonify
 import sqlite3
 import json
 
@@ -55,7 +55,7 @@ def add_employee():
     c.execute(
         'insert into Employee (EmployeeName, AccountName, EmailAddress, Password, Tel, DepartmentID, RoleID) values (?,?,?,?,?,?,?)',
         (ename, aname, email, password, tel, department, role)
-        )
+    )
     conn.commit()
     conn.close()
     return 'employee added'
@@ -118,14 +118,11 @@ def check_employee_email_and_pass():
 # b)
 @app.route('/search', methods=['get'])
 def search_employee():
-    ename = request.json.get('ename')
-    aname = request.json.get('aname')
-    email = request.json.get('email')
+    searchText = request.json.get('search')
     conn = sqlite3.connect(sqldbname)
     c = conn.cursor()
     c.execute(
-        'select * from Employee where EmployeeName like ? or AccountName like ? or EmailAddress like ?',
-        (ename, aname, email,)
+        "select * from Employee where EmployeeName like '%"+searchText+"%' or AccountName like '%"+searchText+"%' or EmailAddress like '%"+searchText+"%'"
     )
     result = c.fetchall()
     conn.close()
